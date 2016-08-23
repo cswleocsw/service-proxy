@@ -1,5 +1,5 @@
 import superagent from 'superagent'
-import { each, isArray, isObject, find, isEqual, remove } from 'lodash'
+import { each, isArray, isObject } from 'lodash'
 
 export default class Proxy {
   request(service, options = {}) {

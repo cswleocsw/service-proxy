@@ -1,4 +1,4 @@
-import { isString, isObject } from 'lodash'
+import { isString } from 'lodash'
 
 import Proxy from './Proxy'
 import Service from './Service'
@@ -28,7 +28,6 @@ export default class ServiceProxy {
 
     if (!service || !(service instanceof Service)) {
       throw new Error(`request service ${key} is not define`)
-      return
     }
 
     return this.proxy.request(service, options)
