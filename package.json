@@ -33,5 +33,9 @@
   "dependencies": {
     "lodash": "^4.15.0",
     "superagent": "^2.2.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/cswleocsw/service-proxy.git"
   }
 }
