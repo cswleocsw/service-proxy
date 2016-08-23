@@ -10,7 +10,7 @@
     "clean": "rimraf dist",
     "demo": "browser-sync start --serveStatic public dist",
     "lint": "eslint src",
-    "test": "mocha --compilers js:babel-register --recursive --timeout 5000",
+    "test": "mocha --compilers js:babel-register --recursive --no-timeouts",
     "test:watch": "npm test -- --watch"
   },
   "author": "cswleocsw <cswleo@gmail.com>",
