@@ -105,7 +105,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    if (!service || !(service instanceof _Service2.default)) {
 	      throw new Error('request service ' + key + ' is not define');
-	      return;
 	    }
 
 	    return this.proxy.request(service, options);
@@ -16945,21 +16944,25 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      // 封裝 superagent 的訊息
 	      httpRequest.then(function (response) {
-	        resolve({
+	        var res = {
 	          status: response.status,
 	          text: response.text,
 	          body: response.body,
 	          statusText: response.statusText,
 	          debug: response
-	        });
+	        };
+	        service.setCache(res);
+	        resolve(res);
 	      }).catch(function (error) {
-	        reject({
+	        var res = {
 	          status: error.status,
 	          text: error.response.text,
 	          body: error.response.body,
 	          statusText: error.response.statusText,
 	          debug: error
-	        });
+	        };
+	        service.setCache(res);
+	        reject(res);
 	      });
 	    });
 
@@ -16991,9 +16994,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _classCallCheck(this, Service);
 
 	    this.type = options.type || 'GET';
+
 	    this.url = options.url || '';
+
 	    this.header = (0, _lodash.isArray)(options.header) ? options.header : [];
+
+	    this.cache = {};
 	  }
+
+	  Service.prototype.setCache = function setCache(cache) {
+	    this.cache = cache;
+	  };
+
+	  Service.prototype.getCache = function getCache() {
+	    var path = arguments.length <= 0 || arguments[0] === undefined ? '' : arguments[0];
+
+	    return (0, _lodash.get)(this.cache, path, this.cache);
+	  };
 
 	  Service.prototype.getURL = function getURL() {
 	    return this.url;

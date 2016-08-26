@@ -27,22 +27,26 @@ export default class Proxy {
       // 封裝 superagent 的訊息
       httpRequest
         .then((response) => {
-          resolve({
+          let res = {
             status: response.status,
             text: response.text,
             body: response.body,
             statusText: response.statusText,
             debug: response
-          })
+          }
+          service.setCache(res)
+          resolve(res)
         })
         .catch((error) => {
-          reject({
+          let res = {
             status: error.status,
             text: error.response.text,
             body: error.response.body,
             statusText: error.response.statusText,
             debug: error
-          })
+          }
+          service.setCache(res)
+          reject(res)
         })
     })
 

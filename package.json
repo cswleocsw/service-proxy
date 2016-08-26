@@ -5,6 +5,7 @@
   "main": "dist/ServiceProxy.min.js",
   "scripts": {
     "build": "npm run clean && npm run build:umd && npm run build:umd:min",
+    "build:dev": "NODE_ENV=production webpack src/ServiceProxy.js dist/ServiceProxy.js -w",
     "build:umd": "NODE_ENV=production webpack src/ServiceProxy.js dist/ServiceProxy.js",
     "build:umd:min": "NODE_ENV=production webpack src/ServiceProxy.js dist/ServiceProxy.min.js -p",
     "clean": "rimraf dist",
