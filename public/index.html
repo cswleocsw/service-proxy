@@ -14,16 +14,16 @@
 <body>
 
 <script>
-    var service = new ServiceProxy({ name: 'test' })
+    var service_proxy = new ServiceProxy({ name: 'lobby' })
 
     // GET
-    service.register('source', {
+    service_proxy.register('source', {
         type: 'GET',
         url: '/source.json',
         header: [{ key: 'Content-Type', value: 'application/json' }]
     })
 
-    service.request('source', { query: [{ t: Date.now() }] })
+    service_proxy.request('source', { query: [{ t: Date.now() }] })
             .then((res) => console.log({ response: res }))
             .catch((res) => console.log({ response: res }))
 </script>
