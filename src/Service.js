@@ -16,7 +16,7 @@ export default class Service {
   }
 
   getCache(path = '') {
-    return get(this.cache, path, this.cache)
+    return get(this.cache, path)
   }
 
   getURL() {

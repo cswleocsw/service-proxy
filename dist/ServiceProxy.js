@@ -17009,7 +17009,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  Service.prototype.getCache = function getCache() {
 	    var path = arguments.length <= 0 || arguments[0] === undefined ? '' : arguments[0];
 
-	    return (0, _lodash.get)(this.cache, path, this.cache);
+	    return (0, _lodash.get)(this.cache, path);
 	  };
 
 	  Service.prototype.getURL = function getURL() {
