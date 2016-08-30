@@ -17008,8 +17008,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  Service.prototype.getCache = function getCache() {
 	    var path = arguments.length <= 0 || arguments[0] === undefined ? '' : arguments[0];
+	    var defaultValue = arguments[1];
 
-	    return (0, _lodash.get)(this.cache, path);
+	    var returnValue = (0, _lodash.get)(this.cache, path);
+
+	    if (!returnValue && defaultValue) {
+	      return defaultValue;
+	    }
+
+	    return returnValue;
 	  };
 
 	  Service.prototype.getURL = function getURL() {
