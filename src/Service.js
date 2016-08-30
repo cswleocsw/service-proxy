@@ -15,8 +15,14 @@ export default class Service {
     this.cache = cache
   }
 
-  getCache(path = '') {
-    return get(this.cache, path)
+  getCache(path = '', defaultValue) {
+    let returnValue = get(this.cache, path)
+
+    if (!returnValue && defaultValue) {
+      return defaultValue
+    }
+
+    return returnValue
   }
 
   getURL() {
