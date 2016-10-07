@@ -16920,7 +16920,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var promise = new Promise(function (resolve, reject) {
 	      var url = service.getURL();
 
-	      if (url && options.url_replaces) {
+	      if (url && options.route_params) {
 	        url = url.replace(/:([^\/]+)/g, function (match, token) {
 	          return (0, _lodash.get)(options.route_params, token, '');
 	        });

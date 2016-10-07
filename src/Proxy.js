@@ -6,7 +6,7 @@ export default class Proxy {
     let promise = new Promise((resolve, reject) => {
       let url = service.getURL()
 
-      if (url && options.url_replaces) {
+      if (url && options.route_params) {
         url = url.replace(/:([^\/]+)/g, (match, token) => {
           return get(options.route_params, token, '')
         })
