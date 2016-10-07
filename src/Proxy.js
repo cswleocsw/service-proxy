@@ -7,7 +7,7 @@ export default class Proxy {
       let url = service.getURL()
 
       if (url && options.route_params) {
-        url = url.replace(/:([^\/]+)/g, (match, token) => {
+        url = url.replace(/:([^\/\.\?]+)/g, (match, token) => {
           return get(options.route_params, token, '')
         })
       }

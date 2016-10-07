@@ -16921,7 +16921,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var url = service.getURL();
 
 	      if (url && options.route_params) {
-	        url = url.replace(/:([^\/]+)/g, function (match, token) {
+	        url = url.replace(/:([^\/\.\?]+)/g, function (match, token) {
 	          return (0, _lodash.get)(options.route_params, token, '');
 	        });
 	      }
