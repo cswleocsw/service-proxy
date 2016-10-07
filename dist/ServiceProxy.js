@@ -16922,7 +16922,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      if (url && options.route_params) {
 	        url = url.replace(/:([^\/\.\?]+)/g, function (match, token) {
-	          return (0, _lodash.get)(options.route_params, token, '');
+	          // TODO: fix regex
+	          if ((0, _lodash.get)(options.route_params, token, '')) {
+	            return (0, _lodash.get)(options.route_params, token, '');
+	          } else {
+	            return ':' + token;
+	          }
 	        });
 	      }
 

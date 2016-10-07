@@ -8,7 +8,12 @@ export default class Proxy {
 
       if (url && options.route_params) {
         url = url.replace(/:([^\/\.\?]+)/g, (match, token) => {
-          return get(options.route_params, token, '')
+          // TODO: fix regex
+          if (get(options.route_params, token, '')) {
+            return get(options.route_params, token, '')
+          } else {
+            return `:${token}`
+          }
         })
       }
 
