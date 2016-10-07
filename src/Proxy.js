@@ -1,10 +1,18 @@
 import superagent from 'superagent'
-import { each, isArray, isObject } from 'lodash'
+import { get, each, isArray, isObject } from 'lodash'
 
 export default class Proxy {
   request(service, options = {}) {
     let promise = new Promise((resolve, reject) => {
-      let httpRequest = superagent(service.getType(), service.getURL())
+      let url = service.getURL()
+
+      if (url && options.url_replaces) {
+        url = url.replace(/:([^\/]+)/g, (match, token) => {
+          return get(options.route_params, token, '')
+        })
+      }
+
+      let httpRequest = superagent(service.getType(), url)
 
       // header
       let headers = service.getHeader()

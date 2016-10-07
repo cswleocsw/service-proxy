@@ -16918,7 +16918,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
 	    var promise = new Promise(function (resolve, reject) {
-	      var httpRequest = (0, _superagent2.default)(service.getType(), service.getURL());
+	      var url = service.getURL();
+
+	      if (url && options.url_replaces) {
+	        url = url.replace(/:([^\/]+)/g, function (match, token) {
+	          return (0, _lodash.get)(options.route_params, token, '');
+	        });
+	      }
+
+	      var httpRequest = (0, _superagent2.default)(service.getType(), url);
 
 	      // header
 	      var headers = service.getHeader();
@@ -17010,13 +17018,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var path = arguments.length <= 0 || arguments[0] === undefined ? '' : arguments[0];
 	    var defaultValue = arguments[1];
 
-	    var returnValue = (0, _lodash.get)(this.cache, path);
-
-	    if (!returnValue && defaultValue) {
-	      return defaultValue;
-	    }
-
-	    return returnValue;
+	    return (0, _lodash.get)(this.cache, path, defaultValue);
 	  };
 
 	  Service.prototype.getURL = function getURL() {
