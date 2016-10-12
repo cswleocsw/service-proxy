@@ -16946,8 +16946,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      // query
 	      if (options.query) {
-	        (0, _lodash.each)(options.query, function (o) {
-	          return httpRequest.query(o);
+	        (0, _lodash.each)(options.query, function (v, k) {
+	          if (k && v) {
+	            var query = {};
+	            query[k] = v;
+	            httpRequest.query(query);
+	          }
 	        });
 	      }
 

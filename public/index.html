@@ -23,9 +23,15 @@
         header: [{ key: 'Content-Type', value: 'application/json' }]
     })
 
-    service_proxy.request('source', { query: [{ t: Date.now() }] })
-            .then((res) => console.log({ response: res }))
-            .catch((res) => console.log({ response: res }))
+    service_proxy.request('source', {
+        query: {
+            t: Date.now()
+        }
+    }).then((res) => {
+        console.log({ response: res })
+    }).catch((res) => {
+        console.log({ response: res })
+    })
 </script>
 
 

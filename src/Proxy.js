@@ -30,7 +30,13 @@ export default class Proxy {
 
       // query
       if (options.query) {
-        each(options.query, (o) => httpRequest.query(o))
+        each(options.query, (v, k) => {
+          if (k && v) {
+            const query = {}
+            query[k] = v
+            httpRequest.query(query)
+          }
+        })
       }
 
       if (service.getType() === 'POST' && isObject(options.data)) {
