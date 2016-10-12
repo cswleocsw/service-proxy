@@ -31,11 +31,9 @@ export default class Proxy {
       // query
       if (options.query) {
         each(options.query, (v, k) => {
-          if (k && v) {
-            const query = {}
-            query[k] = v
-            httpRequest.query(query)
-          }
+          const query = {}
+          query[k] = v
+          httpRequest.query(query)
         })
       }
 
