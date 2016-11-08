@@ -16899,8 +16899,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  Response.prototype.get = function get(path, def) {
-	    var query = !path ? 'body' : 'body.' + path;
-	    return (0, _lodash.get)(this.body, query, def);
+	    if (path === undefined) {
+	      return this.body;
+	    }
+	    return (0, _lodash.get)(this.body, '' + path, def);
 	  };
 
 	  return Response;

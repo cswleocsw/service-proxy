@@ -11,7 +11,9 @@ export default class Response {
   }
 
   get(path, def) {
-    const query = !path ? 'body' : `body.${path}`
-    return get(this.body, query, def)
+    if (path === undefined) {
+      return this.body
+    }
+    return get(this.body, `${path}`, def)
   }
 }
