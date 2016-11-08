@@ -25,7 +25,7 @@
     "babel-register": "^6.11.6",
     "browser-sync": "^2.14.0",
     "chai": "^3.5.0",
-    "chai-as-promised": "^5.3.0",
+    "chai-as-promised": "^6.0.0",
     "eslint": "^3.3.1",
     "mocha": "^3.0.2",
     "rimraf": "^2.5.4",
