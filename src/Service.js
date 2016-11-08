@@ -1,4 +1,5 @@
 import { get, isArray } from 'lodash'
+import Response from './Response'
 
 export default class Service {
   constructor(options = {}) {
@@ -8,15 +9,15 @@ export default class Service {
 
     this.header = isArray(options.header) ? options.header : []
 
-    this.cache = {}
+    this.cache = new Response()
   }
 
   setCache(cache) {
     this.cache = cache
   }
 
-  getCache(path = '', defaultValue) {
-    return get(this.cache, path, defaultValue)
+  getCache() {
+    return this.cache
   }
 
   getURL() {

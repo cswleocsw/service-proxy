@@ -1,9 +1,10 @@
 import superagent from 'superagent'
 import { get, each, isArray, isObject } from 'lodash'
+import Response from './Response'
 
 export default class Proxy {
   request(service, options = {}) {
-    let promise = new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       let url = service.getURL()
 
       if (url && options.route_params) {
@@ -17,7 +18,7 @@ export default class Proxy {
         })
       }
 
-      let httpRequest = superagent(service.getType(), url)
+      const httpRequest = superagent(service.getType(), url)
 
       // header
       let headers = service.getHeader()
@@ -44,29 +45,27 @@ export default class Proxy {
       // 封裝 superagent 的訊息
       httpRequest
         .then((response) => {
-          let res = {
+          const res = new Response({
             status: response.status,
             text: response.text,
             body: response.body,
             statusText: response.statusText,
             debug: response
-          }
+          })
           service.setCache(res)
           resolve(res)
         })
         .catch((error) => {
-          let res = {
+          const res = new Response({
             status: error.status,
             text: error.response.text,
             body: error.response.body,
             statusText: error.response.statusText,
             debug: error
-          }
+          })
           service.setCache(res)
           reject(res)
         })
     })
-
-    return promise
   }
 }

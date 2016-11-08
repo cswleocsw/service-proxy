@@ -60,11 +60,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _lodash = __webpack_require__(1);
 
-	var _Proxy = __webpack_require__(3);
+	var _Proxy = __webpack_require__(4);
 
 	var _Proxy2 = _interopRequireDefault(_Proxy);
 
-	var _Service = __webpack_require__(4);
+	var _Service = __webpack_require__(5);
 
 	var _Service2 = _interopRequireDefault(_Service);
 
@@ -16870,10 +16870,47 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	}.call(this));
 
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(9)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(10)(module)))
 
 /***/ },
 /* 2 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	exports.__esModule = true;
+
+	var _lodash = __webpack_require__(1);
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var Response = function () {
+	  function Response() {
+	    var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+	    _classCallCheck(this, Response);
+
+	    this.body = options.body || {};
+	    this.debug = options.debug || {};
+	    this.status = options.status;
+	    this.statusText = options.statusText;
+	    this.text = options.text;
+	    this.error = options.error;
+	  }
+
+	  Response.prototype.get = function get(path, def) {
+	    var query = !path ? 'body' : 'body.' + path;
+	    return (0, _lodash.get)(this.body, query, def);
+	  };
+
+	  return Response;
+	}();
+
+	exports.default = Response;
+	module.exports = exports['default'];
+
+/***/ },
+/* 3 */
 /***/ function(module, exports) {
 
 	/**
@@ -16892,18 +16929,22 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 3 */
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	exports.__esModule = true;
 
-	var _superagent = __webpack_require__(6);
+	var _superagent = __webpack_require__(7);
 
 	var _superagent2 = _interopRequireDefault(_superagent);
 
 	var _lodash = __webpack_require__(1);
+
+	var _Response = __webpack_require__(2);
+
+	var _Response2 = _interopRequireDefault(_Response);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -16917,7 +16958,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  Proxy.prototype.request = function request(service) {
 	    var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
-	    var promise = new Promise(function (resolve, reject) {
+	    return new Promise(function (resolve, reject) {
 	      var url = service.getURL();
 
 	      if (url && options.route_params) {
@@ -16959,29 +17000,27 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      // 封裝 superagent 的訊息
 	      httpRequest.then(function (response) {
-	        var res = {
+	        var res = new _Response2.default({
 	          status: response.status,
 	          text: response.text,
 	          body: response.body,
 	          statusText: response.statusText,
 	          debug: response
-	        };
+	        });
 	        service.setCache(res);
 	        resolve(res);
 	      }).catch(function (error) {
-	        var res = {
+	        var res = new _Response2.default({
 	          status: error.status,
 	          text: error.response.text,
 	          body: error.response.body,
 	          statusText: error.response.statusText,
 	          debug: error
-	        };
+	        });
 	        service.setCache(res);
 	        reject(res);
 	      });
 	    });
-
-	    return promise;
 	  };
 
 	  return Proxy;
@@ -16991,7 +17030,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 4 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -16999,6 +17038,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.__esModule = true;
 
 	var _lodash = __webpack_require__(1);
+
+	var _Response = __webpack_require__(2);
+
+	var _Response2 = _interopRequireDefault(_Response);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -17014,7 +17059,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    this.header = (0, _lodash.isArray)(options.header) ? options.header : [];
 
-	    this.cache = {};
+	    this.cache = new _Response2.default();
 	  }
 
 	  Service.prototype.setCache = function setCache(cache) {
@@ -17022,10 +17067,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  Service.prototype.getCache = function getCache() {
-	    var path = arguments.length <= 0 || arguments[0] === undefined ? '' : arguments[0];
-	    var defaultValue = arguments[1];
-
-	    return (0, _lodash.get)(this.cache, path, defaultValue);
+	    return this.cache;
 	  };
 
 	  Service.prototype.getURL = function getURL() {
@@ -17047,7 +17089,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -17216,7 +17258,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -17233,9 +17275,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  root = this;
 	}
 
-	var Emitter = __webpack_require__(5);
-	var requestBase = __webpack_require__(7);
-	var isObject = __webpack_require__(2);
+	var Emitter = __webpack_require__(6);
+	var requestBase = __webpack_require__(8);
+	var isObject = __webpack_require__(3);
 
 	/**
 	 * Noop.
@@ -17247,7 +17289,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Expose `request`.
 	 */
 
-	var request = module.exports = __webpack_require__(8).bind(null, Request);
+	var request = module.exports = __webpack_require__(9).bind(null, Request);
 
 	/**
 	 * Determine XHR.
@@ -18198,13 +18240,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * Module of mixed-in functions shared between node and client code
 	 */
-	var isObject = __webpack_require__(2);
+	var isObject = __webpack_require__(3);
 
 	/**
 	 * Clear previous timeout.
@@ -18551,7 +18593,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports) {
 
 	// The node and browser modules expose versions of this with the
@@ -18589,7 +18631,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports) {
 
 	module.exports = function(module) {
