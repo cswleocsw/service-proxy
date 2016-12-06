@@ -7,7 +7,6 @@ export default class ServiceProxy {
   constructor(options = {}) {
     this.name = options.name || ''
     this.map = new Map()
-    this.proxy = new Proxy()
   }
 
   register(key, options = {}) {
@@ -24,13 +23,13 @@ export default class ServiceProxy {
   }
 
   request(key, options = {}) {
-    let service = this.map.get(key)
+    const service = this.map.get(key)
 
     if (!service || !(service instanceof Service)) {
       throw new Error(`request service ${key} is not define`)
     }
 
-    return this.proxy.request(service, options)
+    return Proxy.request(service, options)
   }
 
   get(key) {
@@ -38,7 +37,7 @@ export default class ServiceProxy {
   }
 
   list() {
-    let arr = []
+    const arr = []
     this.map.forEach((_, key) => arr.push(key))
     return arr
   }

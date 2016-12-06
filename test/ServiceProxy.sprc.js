@@ -1,18 +1,18 @@
 import { expect } from 'chai'
-import ServiceProvider  from '../src/ServiceProxy'
+import ServiceProvider from '../src/ServiceProxy'
 
-describe('ServiceProxy', () => {
+describe('#ServiceProxy', () => {
   let serviceProxy
 
   it('#register()', () => {
     serviceProxy = new ServiceProvider()
-    serviceProxy.register('source', { type: 'GET', url: '/source.json'})
+    serviceProxy.register('source', { type: 'GET', url: '/source.json' })
     expect(serviceProxy.get('source').getType()).to.be.equal('GET')
     expect(serviceProxy.get('source').getURL()).to.be.equal('/source.json')
   })
 
   it('#request()', () => {
-    let promise = serviceProxy.request('source')
+    const promise = serviceProxy.request('source')
     expect(promise).to.be.a('promise');
   })
 })

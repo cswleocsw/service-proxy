@@ -3,18 +3,17 @@ import { get, each, isArray, isObject } from 'lodash'
 import Response from './Response'
 
 export default class Proxy {
-  request(service, options = {}) {
+  static request(service, options = {}) {
     return new Promise((resolve, reject) => {
       let url = service.getURL()
 
       if (url && options.route_params) {
-        url = url.replace(/:([^\/\.\?]+)/g, (match, token) => {
+        url = url.replace(/:([^/.?]+)/g, (match, token) => {
           // TODO: fix regex
           if (get(options.route_params, token, '')) {
             return get(options.route_params, token, '')
-          } else {
-            return `:${token}`
           }
+          return `:${token}`
         })
       }
 
@@ -27,7 +26,7 @@ export default class Proxy {
         headers = headers.concat(options.header)
       }
 
-      each(headers, (header) => httpRequest.set(header.key, header.value))
+      each(headers, header => httpRequest.set(header.key, header.value))
 
       // query
       if (options.query) {

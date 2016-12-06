@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import Service  from '../src/Service'
+import Service from '../src/Service'
 
 describe('#Service', () => {
   const options = {
