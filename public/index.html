@@ -14,21 +14,26 @@
     var service_proxy = new ServiceProxy({ name: 'lobby' })
 
     // GET
-    service_proxy.register('source', {
-        type: 'GET',
-        url: '/source.json',
-        header: [{ key: 'Content-Type', value: 'application/json' }]
+    service_proxy.register('get_product', {
+        type: 'POST',
+        url: '/product'
     })
 
-    service_proxy.request('source', {
-        query: {
-            t: Date.now()
-        }
-    }).then((res) => {
-        console.log(res)
-    }).catch((res) => {
-        console.log(res)
+    // POST
+    service_proxy.register('add_product', {
+        type: 'POST',
+        url: '/product'
     })
+
+    service_proxy.request('get_product', { query: { t: Date.now() } })
+      .then(res => console.log(res))
+      .catch(res => console.log(res))
+
+
+    service_proxy.request('add_product', { data: { 'product-id': '001' } })
+      .then(res => console.log(res))
+      .catch(res => console.log(res))
+
 </script>
 
 

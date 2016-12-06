@@ -17327,6 +17327,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      if (service.getType() === 'POST' && (0, _lodash.isObject)(options.data)) {
+	        httpRequest.type('form');
 	        httpRequest.send(options.data);
 	      }
 
