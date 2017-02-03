@@ -37,7 +37,9 @@ export default class Proxy {
         })
       }
 
-      if (service.getType() === 'POST' && isObject(options.data)) {
+      const protocol = service.getType()
+
+      if ((protocol === 'POST' || protocol === 'PUT') && isObject(options.data)) {
         httpRequest.type('form')
         httpRequest.send(options.data)
       }
