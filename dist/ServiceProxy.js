@@ -149,7 +149,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var undefined;
 
 	  /** Used as the semantic version number. */
-	  var VERSION = '4.17.2';
+	  var VERSION = '4.17.4';
 
 	  /** Used as the size to enable large array optimizations. */
 	  var LARGE_ARRAY_SIZE = 200;
@@ -1704,9 +1704,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * Shortcut fusion is an optimization to merge iteratee calls; this avoids
 	     * the creation of intermediate arrays and can greatly reduce the number of
 	     * iteratee executions. Sections of a chain sequence qualify for shortcut
-	     * fusion if the section is applied to an array of at least `200` elements
-	     * and any iteratees accept only one argument. The heuristic for whether a
-	     * section qualifies for shortcut fusion is subject to change.
+	     * fusion if the section is applied to an array and iteratees accept only
+	     * one argument. The heuristic for whether a section qualifies for shortcut
+	     * fusion is subject to change.
 	     *
 	     * Chaining is supported in custom builds as long as the `_#value` method is
 	     * directly or indirectly included in the build.
@@ -1865,8 +1865,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /**
 	     * By default, the template delimiters used by lodash are like those in
-	     * embedded Ruby (ERB). Change the following template settings to use
-	     * alternative delimiters.
+	     * embedded Ruby (ERB) as well as ES2015 template strings. Change the
+	     * following template settings to use alternative delimiters.
 	     *
 	     * @static
 	     * @memberOf _
@@ -2013,8 +2013,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          resIndex = 0,
 	          takeCount = nativeMin(length, this.__takeCount__);
 
-	      if (!isArr || arrLength < LARGE_ARRAY_SIZE ||
-	          (arrLength == length && takeCount == length)) {
+	      if (!isArr || (!isRight && arrLength == length && takeCount == length)) {
 	        return baseWrapperValue(array, this.__actions__);
 	      }
 	      var result = [];
@@ -2128,7 +2127,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    function hashHas(key) {
 	      var data = this.__data__;
-	      return nativeCreate ? data[key] !== undefined : hasOwnProperty.call(data, key);
+	      return nativeCreate ? (data[key] !== undefined) : hasOwnProperty.call(data, key);
 	    }
 
 	    /**
@@ -2599,24 +2598,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    function arrayShuffle(array) {
 	      return shuffleSelf(copyArray(array));
-	    }
-
-	    /**
-	     * Used by `_.defaults` to customize its `_.assignIn` use.
-	     *
-	     * @private
-	     * @param {*} objValue The destination value.
-	     * @param {*} srcValue The source value.
-	     * @param {string} key The key of the property to assign.
-	     * @param {Object} object The parent object of `objValue`.
-	     * @returns {*} Returns the value to assign.
-	     */
-	    function assignInDefaults(objValue, srcValue, key, object) {
-	      if (objValue === undefined ||
-	          (eq(objValue, objectProto[key]) && !hasOwnProperty.call(object, key))) {
-	        return srcValue;
-	      }
-	      return objValue;
 	    }
 
 	    /**
@@ -3231,8 +3212,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (value == null) {
 	        return value === undefined ? undefinedTag : nullTag;
 	      }
-	      value = Object(value);
-	      return (symToStringTag && symToStringTag in value)
+	      return (symToStringTag && symToStringTag in Object(value))
 	        ? getRawTag(value)
 	        : objectToString(value);
 	    }
@@ -3436,7 +3416,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (value === other) {
 	        return true;
 	      }
-	      if (value == null || other == null || (!isObject(value) && !isObjectLike(other))) {
+	      if (value == null || other == null || (!isObjectLike(value) && !isObjectLike(other))) {
 	        return value !== value && other !== other;
 	      }
 	      return baseIsEqualDeep(value, other, bitmask, customizer, baseIsEqual, stack);
@@ -3459,17 +3439,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    function baseIsEqualDeep(object, other, bitmask, customizer, equalFunc, stack) {
 	      var objIsArr = isArray(object),
 	          othIsArr = isArray(other),
-	          objTag = arrayTag,
-	          othTag = arrayTag;
+	          objTag = objIsArr ? arrayTag : getTag(object),
+	          othTag = othIsArr ? arrayTag : getTag(other);
 
-	      if (!objIsArr) {
-	        objTag = getTag(object);
-	        objTag = objTag == argsTag ? objectTag : objTag;
-	      }
-	      if (!othIsArr) {
-	        othTag = getTag(other);
-	        othTag = othTag == argsTag ? objectTag : othTag;
-	      }
+	      objTag = objTag == argsTag ? objectTag : objTag;
+	      othTag = othTag == argsTag ? objectTag : othTag;
+
 	      var objIsObj = objTag == objectTag,
 	          othIsObj = othTag == objectTag,
 	          isSameTag = objTag == othTag;
@@ -3917,7 +3892,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @returns {Object} Returns the new object.
 	     */
 	    function basePick(object, paths) {
-	      object = Object(object);
 	      return basePickBy(object, paths, function(value, path) {
 	        return hasIn(object, path);
 	      });
@@ -5310,8 +5284,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          var args = arguments,
 	              value = args[0];
 
-	          if (wrapper && args.length == 1 &&
-	              isArray(value) && value.length >= LARGE_ARRAY_SIZE) {
+	          if (wrapper && args.length == 1 && isArray(value)) {
 	            return wrapper.plant(value).value();
 	          }
 	          var index = 0,
@@ -5618,7 +5591,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var func = Math[methodName];
 	      return function(number, precision) {
 	        number = toNumber(number);
-	        precision = nativeMin(toInteger(precision), 292);
+	        precision = precision == null ? 0 : nativeMin(toInteger(precision), 292);
 	        if (precision) {
 	          // Shift with exponential notation to avoid floating-point issues.
 	          // See [MDN](https://mdn.io/round#Examples) for more details.
@@ -5723,7 +5696,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      thisArg = newData[2];
 	      partials = newData[3];
 	      holders = newData[4];
-	      arity = newData[9] = newData[9] == null
+	      arity = newData[9] = newData[9] === undefined
 	        ? (isBindKey ? 0 : func.length)
 	        : nativeMax(newData[9] - length, 0);
 
@@ -5741,6 +5714,63 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	      var setter = data ? baseSetData : setData;
 	      return setWrapToString(setter(result, newData), func, bitmask);
+	    }
+
+	    /**
+	     * Used by `_.defaults` to customize its `_.assignIn` use to assign properties
+	     * of source objects to the destination object for all destination properties
+	     * that resolve to `undefined`.
+	     *
+	     * @private
+	     * @param {*} objValue The destination value.
+	     * @param {*} srcValue The source value.
+	     * @param {string} key The key of the property to assign.
+	     * @param {Object} object The parent object of `objValue`.
+	     * @returns {*} Returns the value to assign.
+	     */
+	    function customDefaultsAssignIn(objValue, srcValue, key, object) {
+	      if (objValue === undefined ||
+	          (eq(objValue, objectProto[key]) && !hasOwnProperty.call(object, key))) {
+	        return srcValue;
+	      }
+	      return objValue;
+	    }
+
+	    /**
+	     * Used by `_.defaultsDeep` to customize its `_.merge` use to merge source
+	     * objects into destination objects that are passed thru.
+	     *
+	     * @private
+	     * @param {*} objValue The destination value.
+	     * @param {*} srcValue The source value.
+	     * @param {string} key The key of the property to merge.
+	     * @param {Object} object The parent object of `objValue`.
+	     * @param {Object} source The parent object of `srcValue`.
+	     * @param {Object} [stack] Tracks traversed source values and their merged
+	     *  counterparts.
+	     * @returns {*} Returns the value to assign.
+	     */
+	    function customDefaultsMerge(objValue, srcValue, key, object, source, stack) {
+	      if (isObject(objValue) && isObject(srcValue)) {
+	        // Recursively merge objects and arrays (susceptible to call stack limits).
+	        stack.set(srcValue, objValue);
+	        baseMerge(objValue, srcValue, undefined, customDefaultsMerge, stack);
+	        stack['delete'](srcValue);
+	      }
+	      return objValue;
+	    }
+
+	    /**
+	     * Used by `_.omit` to customize its `_.cloneDeep` use to only clone plain
+	     * objects.
+	     *
+	     * @private
+	     * @param {*} value The value to inspect.
+	     * @param {string} key The key of the property to inspect.
+	     * @returns {*} Returns the uncloned value or `undefined` to defer cloning to `_.cloneDeep`.
+	     */
+	    function customOmitClone(value) {
+	      return isPlainObject(value) ? undefined : value;
 	    }
 
 	    /**
@@ -5914,9 +5944,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    function equalObjects(object, other, bitmask, customizer, equalFunc, stack) {
 	      var isPartial = bitmask & COMPARE_PARTIAL_FLAG,
-	          objProps = keys(object),
+	          objProps = getAllKeys(object),
 	          objLength = objProps.length,
-	          othProps = keys(other),
+	          othProps = getAllKeys(other),
 	          othLength = othProps.length;
 
 	      if (objLength != othLength && !isPartial) {
@@ -6154,7 +6184,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @param {Object} object The object to query.
 	     * @returns {Array} Returns the array of symbols.
 	     */
-	    var getSymbols = nativeGetSymbols ? overArg(nativeGetSymbols, Object) : stubArray;
+	    var getSymbols = !nativeGetSymbols ? stubArray : function(object) {
+	      if (object == null) {
+	        return [];
+	      }
+	      object = Object(object);
+	      return arrayFilter(nativeGetSymbols(object), function(symbol) {
+	        return propertyIsEnumerable.call(object, symbol);
+	      });
+	    };
 
 	    /**
 	     * Creates an array of the own and inherited enumerable symbols of `object`.
@@ -6638,29 +6676,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      data[1] = newBitmask;
 
 	      return data;
-	    }
-
-	    /**
-	     * Used by `_.defaultsDeep` to customize its `_.merge` use.
-	     *
-	     * @private
-	     * @param {*} objValue The destination value.
-	     * @param {*} srcValue The source value.
-	     * @param {string} key The key of the property to merge.
-	     * @param {Object} object The parent object of `objValue`.
-	     * @param {Object} source The parent object of `srcValue`.
-	     * @param {Object} [stack] Tracks traversed source values and their merged
-	     *  counterparts.
-	     * @returns {*} Returns the value to assign.
-	     */
-	    function mergeDefaults(objValue, srcValue, key, object, source, stack) {
-	      if (isObject(objValue) && isObject(srcValue)) {
-	        // Recursively merge objects and arrays (susceptible to call stack limits).
-	        stack.set(srcValue, objValue);
-	        baseMerge(objValue, srcValue, undefined, mergeDefaults, stack);
-	        stack['delete'](srcValue);
-	      }
-	      return objValue;
 	    }
 
 	    /**
@@ -8405,7 +8420,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     *
 	     * var users = [
 	     *   { 'user': 'barney',  'active': false },
-	     *   { 'user': 'fred',    'active': false},
+	     *   { 'user': 'fred',    'active': false },
 	     *   { 'user': 'pebbles', 'active': true }
 	     * ];
 	     *
@@ -10974,7 +10989,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (typeof func != 'function') {
 	        throw new TypeError(FUNC_ERROR_TEXT);
 	      }
-	      start = start === undefined ? 0 : nativeMax(toInteger(start), 0);
+	      start = start == null ? 0 : nativeMax(toInteger(start), 0);
 	      return baseRest(function(args) {
 	        var array = args[start],
 	            otherArgs = castSlice(args, 0, start);
@@ -11644,7 +11659,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * date objects, error objects, maps, numbers, `Object` objects, regexes,
 	     * sets, strings, symbols, and typed arrays. `Object` objects are compared
 	     * by their own, not inherited, enumerable properties. Functions and DOM
-	     * nodes are **not** supported.
+	     * nodes are compared by strict equality, i.e. `===`.
 	     *
 	     * @static
 	     * @memberOf _
@@ -12664,7 +12679,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * // => 3
 	     */
 	    function toSafeInteger(value) {
-	      return baseClamp(toInteger(value), -MAX_SAFE_INTEGER, MAX_SAFE_INTEGER);
+	      return value
+	        ? baseClamp(toInteger(value), -MAX_SAFE_INTEGER, MAX_SAFE_INTEGER)
+	        : (value === 0 ? value : 0);
 	    }
 
 	    /**
@@ -12918,7 +12935,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * // => { 'a': 1, 'b': 2 }
 	     */
 	    var defaults = baseRest(function(args) {
-	      args.push(undefined, assignInDefaults);
+	      args.push(undefined, customDefaultsAssignIn);
 	      return apply(assignInWith, undefined, args);
 	    });
 
@@ -12942,7 +12959,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * // => { 'a': { 'b': 2, 'c': 3 } }
 	     */
 	    var defaultsDeep = baseRest(function(args) {
-	      args.push(undefined, mergeDefaults);
+	      args.push(undefined, customDefaultsMerge);
 	      return apply(mergeWith, undefined, args);
 	    });
 
@@ -13604,7 +13621,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      });
 	      copyObject(object, getAllKeysIn(object), result);
 	      if (isDeep) {
-	        result = baseClone(result, CLONE_DEEP_FLAG | CLONE_FLAT_FLAG | CLONE_SYMBOLS_FLAG);
+	        result = baseClone(result, CLONE_DEEP_FLAG | CLONE_FLAT_FLAG | CLONE_SYMBOLS_FLAG, customOmitClone);
 	      }
 	      var length = paths.length;
 	      while (length--) {
@@ -14753,7 +14770,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    function startsWith(string, target, position) {
 	      string = toString(string);
-	      position = baseClamp(toInteger(position), 0, string.length);
+	      position = position == null
+	        ? 0
+	        : baseClamp(toInteger(position), 0, string.length);
+
 	      target = baseToString(target);
 	      return string.slice(position, position + target.length) == target;
 	    }
@@ -14872,9 +14892,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        options = undefined;
 	      }
 	      string = toString(string);
-	      options = assignInWith({}, options, settings, assignInDefaults);
+	      options = assignInWith({}, options, settings, customDefaultsAssignIn);
 
-	      var imports = assignInWith({}, options.imports, settings.imports, assignInDefaults),
+	      var imports = assignInWith({}, options.imports, settings.imports, customDefaultsAssignIn),
 	          importsKeys = keys(imports),
 	          importsValues = baseValues(imports, importsKeys);
 
@@ -16958,14 +16978,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // Add `LazyWrapper` methods for `_.drop` and `_.take` variants.
 	    arrayEach(['drop', 'take'], function(methodName, index) {
 	      LazyWrapper.prototype[methodName] = function(n) {
-	        var filtered = this.__filtered__;
-	        if (filtered && !index) {
-	          return new LazyWrapper(this);
-	        }
 	        n = n === undefined ? 1 : nativeMax(toInteger(n), 0);
 
-	        var result = this.clone();
-	        if (filtered) {
+	        var result = (this.__filtered__ && !index)
+	          ? new LazyWrapper(this)
+	          : this.clone();
+
+	        if (result.__filtered__) {
 	          result.__takeCount__ = nativeMin(n, result.__takeCount__);
 	        } else {
 	          result.__views__.push({
@@ -17201,7 +17220,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	}.call(this));
 
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(10)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(12)(module)))
 
 /***/ },
 /* 2 */
@@ -17326,7 +17345,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        });
 	      }
 
-	      if (service.getType() === 'POST' && (0, _lodash.isObject)(options.data)) {
+	      var protocol = service.getType();
+
+	      if ((protocol === 'POST' || protocol === 'PUT') && (0, _lodash.isObject)(options.data)) {
 	        httpRequest.type('form');
 	        httpRequest.send(options.data);
 	      }
@@ -17612,6 +17633,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var RequestBase = __webpack_require__(9);
 	var isObject = __webpack_require__(2);
 	var isFunction = __webpack_require__(8);
+	var ResponseBase = __webpack_require__(10);
 
 	/**
 	 * Noop.
@@ -17841,37 +17863,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	/**
-	 * Return the mime type for the given `str`.
-	 *
-	 * @param {String} str
-	 * @return {String}
-	 * @api private
-	 */
-
-	function type(str){
-	  return str.split(/ *; */).shift();
-	};
-
-	/**
-	 * Return header field parameters.
-	 *
-	 * @param {String} str
-	 * @return {Object}
-	 * @api private
-	 */
-
-	function params(str){
-	  return str.split(/ *; */).reduce(function(obj, str){
-	    var parts = str.split(/ *= */),
-	        key = parts.shift(),
-	        val = parts.shift();
-
-	    if (key && val) obj[key] = val;
-	    return obj;
-	  }, {});
-	};
-
-	/**
 	 * Initialize a new `Response` with the given `xhr`.
 	 *
 	 *  - set flags (.ok, .error, etc)
@@ -17926,51 +17917,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	     ? this.xhr.responseText
 	     : null;
 	  this.statusText = this.req.xhr.statusText;
-	  this._setStatusProperties(this.xhr.status);
+	  var status = this.xhr.status;
+	  // handle IE9 bug: http://stackoverflow.com/questions/10046972/msie-returns-status-code-of-1223-for-ajax-request
+	  if (status === 1223) {
+	      status = 204;
+	  }
+	  this._setStatusProperties(status);
 	  this.header = this.headers = parseHeader(this.xhr.getAllResponseHeaders());
 	  // getAllResponseHeaders sometimes falsely returns "" for CORS requests, but
 	  // getResponseHeader still works. so we get content-type even if getting
 	  // other headers fails.
 	  this.header['content-type'] = this.xhr.getResponseHeader('content-type');
 	  this._setHeaderProperties(this.header);
-	  this.body = this.req.method != 'HEAD'
-	    ? this._parseBody(this.text ? this.text : this.xhr.response)
-	    : null;
+
+	  if (null === this.text && req._responseType) {
+	    this.body = this.xhr.response;
+	  } else {
+	    this.body = this.req.method != 'HEAD'
+	      ? this._parseBody(this.text ? this.text : this.xhr.response)
+	      : null;
+	  }
 	}
 
-	/**
-	 * Get case-insensitive `field` value.
-	 *
-	 * @param {String} field
-	 * @return {String}
-	 * @api public
-	 */
-
-	Response.prototype.get = function(field){
-	  return this.header[field.toLowerCase()];
-	};
-
-	/**
-	 * Set header related properties:
-	 *
-	 *   - `.type` the content type without params
-	 *
-	 * A response of "Content-Type: text/plain; charset=utf-8"
-	 * will provide you with a `.type` of "text/plain".
-	 *
-	 * @param {Object} header
-	 * @api private
-	 */
-
-	Response.prototype._setHeaderProperties = function(header){
-	  // content-type
-	  var ct = this.header['content-type'] || '';
-	  this.type = type(ct);
-
-	  // params
-	  var obj = params(ct);
-	  for (var key in obj) this[key] = obj[key];
-	};
+	ResponseBase(Response.prototype);
 
 	/**
 	 * Parse the given body `str`.
@@ -17985,64 +17954,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	Response.prototype._parseBody = function(str){
 	  var parse = request.parse[this.type];
+	  if(this.req._parser) {
+	    return this.req._parser(this, str);
+	  }
 	  if (!parse && isJSON(this.type)) {
 	    parse = request.parse['application/json'];
 	  }
 	  return parse && str && (str.length || str instanceof Object)
 	    ? parse(str)
 	    : null;
-	};
-
-	/**
-	 * Set flags such as `.ok` based on `status`.
-	 *
-	 * For example a 2xx response will give you a `.ok` of __true__
-	 * whereas 5xx will be __false__ and `.error` will be __true__. The
-	 * `.clientError` and `.serverError` are also available to be more
-	 * specific, and `.statusType` is the class of error ranging from 1..5
-	 * sometimes useful for mapping respond colors etc.
-	 *
-	 * "sugar" properties are also defined for common cases. Currently providing:
-	 *
-	 *   - .noContent
-	 *   - .badRequest
-	 *   - .unauthorized
-	 *   - .notAcceptable
-	 *   - .notFound
-	 *
-	 * @param {Number} status
-	 * @api private
-	 */
-
-	Response.prototype._setStatusProperties = function(status){
-	  // handle IE9 bug: http://stackoverflow.com/questions/10046972/msie-returns-status-code-of-1223-for-ajax-request
-	  if (status === 1223) {
-	    status = 204;
-	  }
-
-	  var type = status / 100 | 0;
-
-	  // status / class
-	  this.status = this.statusCode = status;
-	  this.statusType = type;
-
-	  // basics
-	  this.info = 1 == type;
-	  this.ok = 2 == type;
-	  this.clientError = 4 == type;
-	  this.serverError = 5 == type;
-	  this.error = (4 == type || 5 == type)
-	    ? this.toError()
-	    : false;
-
-	  // sugar
-	  this.accepted = 202 == status;
-	  this.noContent = 204 == status;
-	  this.badRequest = 400 == status;
-	  this.unauthorized = 401 == status;
-	  this.notAcceptable = 406 == status;
-	  this.notFound = 404 == status;
-	  this.forbidden = 403 == status;
 	};
 
 	/**
@@ -18102,10 +18022,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        // ie9 doesn't have 'response' property
 	        err.rawResponse = typeof self.xhr.responseType == 'undefined' ? self.xhr.responseText : self.xhr.response;
 	        // issue #876: return the http status code if the response parsing fails
-	        err.statusCode = self.xhr.status ? self.xhr.status : null;
+	        err.status = self.xhr.status ? self.xhr.status : null;
+	        err.statusCode = err.status; // backwards-compat only
 	      } else {
 	        err.rawResponse = null;
-	        err.statusCode = null;
+	        err.status = null;
 	      }
 
 	      return self.callback(err);
@@ -18115,7 +18036,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    var new_err;
 	    try {
-	      if (res.status < 200 || res.status >= 300) {
+	      if (!self._isResponseOK(res)) {
 	        new_err = new Error(res.statusText || 'Unsuccessful HTTP response');
 	        new_err.original = err;
 	        new_err.response = res;
@@ -18169,26 +18090,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 	/**
-	 * Set responseType to `val`. Presently valid responseTypes are 'blob' and
-	 * 'arraybuffer'.
-	 *
-	 * Examples:
-	 *
-	 *      req.get('/')
-	 *        .responseType('blob')
-	 *        .end(callback);
-	 *
-	 * @param {String} val
-	 * @return {Request} for chaining
-	 * @api public
-	 */
-
-	Request.prototype.responseType = function(val){
-	  this._responseType = val;
-	  return this;
-	};
-
-	/**
 	 * Set Accept to `type`, mapping values from `request.types`.
 	 *
 	 * Examples:
@@ -18226,14 +18127,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	Request.prototype.auth = function(user, pass, options){
 	  if (!options) {
 	    options = {
-	      type: 'basic'
+	      type: 'function' === typeof btoa ? 'basic' : 'auto',
 	    }
 	  }
 
 	  switch (options.type) {
 	    case 'basic':
-	      var str = btoa(user + ':' + pass);
-	      this.set('Authorization', 'Basic ' + str);
+	      this.set('Authorization', 'Basic ' + btoa(user + ':' + pass));
 	    break;
 
 	    case 'auto':
@@ -18346,19 +18246,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 	/**
-	 * Invoke callback with timeout error.
-	 *
-	 * @api private
-	 */
-
-	Request.prototype._timeoutError = function(){
-	  var timeout = this._timeout;
-	  var err = new Error('timeout of ' + timeout + 'ms exceeded');
-	  err.timeout = timeout;
-	  this.callback(err);
-	};
-
-	/**
 	 * Compose querystring to append to req.url
 	 *
 	 * @api private
@@ -18367,9 +18254,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	Request.prototype._appendQueryString = function(){
 	  var query = this._query.join('&');
 	  if (query) {
-	    this.url += ~this.url.indexOf('?')
-	      ? '&' + query
-	      : '?' + query;
+	    this.url += (this.url.indexOf('?') >= 0 ? '&' : '?') + query;
+	  }
+
+	  if (this._sort) {
+	    var index = this.url.indexOf('?');
+	    if (index >= 0) {
+	      var queryArr = this.url.substring(index + 1).split('&');
+	      if (isFunction(this._sort)) {
+	        queryArr.sort(this._sort);
+	      } else {
+	        queryArr.sort();
+	      }
+	      this.url = this.url.substring(0, index) + '?' + queryArr.join('&');
+	    }
 	  }
 	};
 
@@ -18398,24 +18296,33 @@ return /******/ (function(modules) { // webpackBootstrap
 	Request.prototype.end = function(fn){
 	  var self = this;
 	  var xhr = this.xhr = request.getXHR();
-	  var timeout = this._timeout;
 	  var data = this._formData || this._data;
+
+	  if (this._endCalled) {
+	    console.warn("Warning: .end() was called twice. This is not supported in superagent");
+	  }
+	  this._endCalled = true;
 
 	  // store callback
 	  this._callback = fn || noop;
 
 	  // state change
 	  xhr.onreadystatechange = function(){
-	    if (4 != xhr.readyState) return;
+	    var readyState = xhr.readyState;
+	    if (readyState >= 2 && self._responseTimeoutTimer) {
+	      clearTimeout(self._responseTimeoutTimer);
+	    }
+	    if (4 != readyState) {
+	      return;
+	    }
 
 	    // In IE9, reads to any property (e.g. status) off of an aborted XHR will
 	    // result in the error "Could not complete the operation due to error c00c023f"
 	    var status;
 	    try { status = xhr.status } catch(e) { status = 0; }
 
-	    if (0 == status) {
-	      if (self.timedout) return self._timeoutError();
-	      if (self._aborted) return;
+	    if (!status) {
+	      if (self.timedout || self._aborted) return;
 	      return self.crossDomainError();
 	    }
 	    self.emit('end');
@@ -18442,31 +18349,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }
 
-	  // timeout
-	  if (timeout && !this._timer) {
-	    this._timer = setTimeout(function(){
-	      self.timedout = true;
-	      self.abort();
-	    }, timeout);
-	  }
-
 	  // querystring
 	  this._appendQueryString();
 
-	  if (this._sort) {
-	    var index = this.url.indexOf('?');
-	    if (~index) {
-	      var queryArr = this.url.substring(index + 1).split('&');
-	      isFunction(this._sort) ? queryArr.sort(this._sort) : queryArr.sort();
-	    }
-	    this.url = this.url.substring(0, index) + '?' + queryArr.join('&');
-	  }
+	  this._setTimeouts();
 
 	  // initiate request
-	  if (this.username && this.password) {
-	    xhr.open(this.method, this.url, true, this.username, this.password);
-	  } else {
-	    xhr.open(this.method, this.url, true);
+	  try {
+	    if (this.username && this.password) {
+	      xhr.open(this.method, this.url, true, this.username, this.password);
+	    } else {
+	      xhr.open(this.method, this.url, true);
+	    }
+	  } catch (err) {
+	    // see #1149
+	    return this.callback(err);
 	  }
 
 	  // CORS
@@ -18477,7 +18374,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // serialize stuff
 	    var contentType = this._header['content-type'];
 	    var serialize = this._serializer || request.serialize[contentType ? contentType.split(';')[0] : ''];
-	    if (!serialize && isJSON(contentType)) serialize = request.serialize['application/json'];
+	    if (!serialize && isJSON(contentType)) {
+	      serialize = request.serialize['application/json'];
+	    }
 	    if (serialize) data = serialize(data);
 	  }
 
@@ -18697,7 +18596,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	RequestBase.prototype.clearTimeout = function _clearTimeout(){
 	  this._timeout = 0;
+	  this._responseTimeout = 0;
 	  clearTimeout(this._timer);
+	  clearTimeout(this._responseTimeoutTimer);
 	  return this;
 	};
 
@@ -18716,6 +18617,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 	/**
+	 * Set format of binary response body.
+	 * In browser valid formats are 'blob' and 'arraybuffer',
+	 * which return Blob and ArrayBuffer, respectively.
+	 *
+	 * In Node all values result in Buffer.
+	 *
+	 * Examples:
+	 *
+	 *      req.get('/')
+	 *        .responseType('blob')
+	 *        .end(callback);
+	 *
+	 * @param {String} val
+	 * @return {Request} for chaining
+	 * @api public
+	 */
+
+	RequestBase.prototype.responseType = function(val){
+	  this._responseType = val;
+	  return this;
+	};
+
+	/**
 	 * Override default request body serializer
 	 *
 	 * This function will be called to convert data set via .send or .attach into payload to send
@@ -18730,15 +18654,31 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 	/**
-	 * Set timeout to `ms`.
+	 * Set timeouts.
 	 *
-	 * @param {Number} ms
+	 * - response timeout is time between sending request and receiving the first byte of the response. Includes DNS and connection time.
+	 * - deadline is the time from start of the request to receiving response body in full. If the deadline is too short large files may not load at all on slow connections.
+	 *
+	 * Value of 0 or false means no timeout.
+	 *
+	 * @param {Number|Object} ms or {response, read, deadline}
 	 * @return {Request} for chaining
 	 * @api public
 	 */
 
-	RequestBase.prototype.timeout = function timeout(ms){
-	  this._timeout = ms;
+	RequestBase.prototype.timeout = function timeout(options){
+	  if (!options || 'object' !== typeof options) {
+	    this._timeout = options;
+	    this._responseTimeout = 0;
+	    return this;
+	  }
+
+	  if ('undefined' !== typeof options.deadline) {
+	    this._timeout = options.deadline;
+	  }
+	  if ('undefined' !== typeof options.response) {
+	    this._responseTimeout = options.response;
+	  }
 	  return this;
 	};
 
@@ -18746,13 +18686,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Promise support
 	 *
 	 * @param {Function} resolve
-	 * @param {Function} reject
+	 * @param {Function} [reject]
 	 * @return {Request}
 	 */
 
 	RequestBase.prototype.then = function then(resolve, reject) {
 	  if (!this._fullfilledPromise) {
 	    var self = this;
+	    if (this._endCalled) {
+	      console.warn("Warning: superagent request was sent twice, because both .end() and .then() were called. Never call .end() if you use promises");
+	    }
 	    this._fullfilledPromise = new Promise(function(innerResolve, innerReject){
 	      self.end(function(err, res){
 	        if (err) innerReject(err); else innerResolve(res);
@@ -18774,6 +18717,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	  fn(this);
 	  return this;
 	}
+
+	RequestBase.prototype.ok = function(cb) {
+	  if ('function' !== typeof cb) throw Error("Callback required");
+	  this._okCallback = cb;
+	  return this;
+	};
+
+	RequestBase.prototype._isResponseOK = function(res) {
+	  if (!res) {
+	    return false;
+	  }
+
+	  if (this._okCallback) {
+	    return this._okCallback(res);
+	  }
+
+	  return res.status >= 200 && res.status < 300;
+	};
 
 
 	/**
@@ -18878,6 +18839,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  // name should be either a string or an object.
 	  if (null === name ||  undefined === name) {
 	    throw new Error('.field(name, val) name can not be empty');
+	  }
+
+	  if (this._data) {
+	    console.error(".field() can't be used if .send() is used. Please use only .send() or only .field() & .attach()");
 	  }
 
 	  if (isObject(name)) {
@@ -19016,6 +18981,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var isObj = isObject(data);
 	  var type = this._header['content-type'];
 
+	  if (this._formData) {
+	    console.error(".send() can't be used if .attach() or .field() is used. Please use only .send() or only .field() & .attach()");
+	  }
+
 	  if (isObj && !this._data) {
 	    if (Array.isArray(data)) {
 	      this._data = [];
@@ -19046,7 +19015,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this._data = data;
 	  }
 
-	  if (!isObj || this._isHost(data)) return this;
+	  if (!isObj || this._isHost(data)) {
+	    return this;
+	  }
 
 	  // default to json
 	  if (!type) this.type('json');
@@ -19088,9 +19059,257 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return this;
 	};
 
+	/**
+	 * Invoke callback with timeout error.
+	 *
+	 * @api private
+	 */
+
+	RequestBase.prototype._timeoutError = function(reason, timeout){
+	  if (this._aborted) {
+	    return;
+	  }
+	  var err = new Error(reason + timeout + 'ms exceeded');
+	  err.timeout = timeout;
+	  err.code = 'ECONNABORTED';
+	  this.timedout = true;
+	  this.abort();
+	  this.callback(err);
+	};
+
+	RequestBase.prototype._setTimeouts = function() {
+	  var self = this;
+
+	  // deadline
+	  if (this._timeout && !this._timer) {
+	    this._timer = setTimeout(function(){
+	      self._timeoutError('Timeout of ', self._timeout);
+	    }, this._timeout);
+	  }
+	  // response timeout
+	  if (this._responseTimeout && !this._responseTimeoutTimer) {
+	    this._responseTimeoutTimer = setTimeout(function(){
+	      self._timeoutError('Response timeout of ', self._responseTimeout);
+	    }, this._responseTimeout);
+	  }
+	}
+
 
 /***/ },
 /* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	/**
+	 * Module dependencies.
+	 */
+
+	var utils = __webpack_require__(11);
+
+	/**
+	 * Expose `ResponseBase`.
+	 */
+
+	module.exports = ResponseBase;
+
+	/**
+	 * Initialize a new `ResponseBase`.
+	 *
+	 * @api public
+	 */
+
+	function ResponseBase(obj) {
+	  if (obj) return mixin(obj);
+	}
+
+	/**
+	 * Mixin the prototype properties.
+	 *
+	 * @param {Object} obj
+	 * @return {Object}
+	 * @api private
+	 */
+
+	function mixin(obj) {
+	  for (var key in ResponseBase.prototype) {
+	    obj[key] = ResponseBase.prototype[key];
+	  }
+	  return obj;
+	}
+
+	/**
+	 * Get case-insensitive `field` value.
+	 *
+	 * @param {String} field
+	 * @return {String}
+	 * @api public
+	 */
+
+	ResponseBase.prototype.get = function(field){
+	    return this.header[field.toLowerCase()];
+	};
+
+	/**
+	 * Set header related properties:
+	 *
+	 *   - `.type` the content type without params
+	 *
+	 * A response of "Content-Type: text/plain; charset=utf-8"
+	 * will provide you with a `.type` of "text/plain".
+	 *
+	 * @param {Object} header
+	 * @api private
+	 */
+
+	ResponseBase.prototype._setHeaderProperties = function(header){
+	    // TODO: moar!
+	    // TODO: make this a util
+
+	    // content-type
+	    var ct = header['content-type'] || '';
+	    this.type = utils.type(ct);
+
+	    // params
+	    var params = utils.params(ct);
+	    for (var key in params) this[key] = params[key];
+
+	    this.links = {};
+
+	    // links
+	    try {
+	        if (header.link) {
+	            this.links = utils.parseLinks(header.link);
+	        }
+	    } catch (err) {
+	        // ignore
+	    }
+	};
+
+	/**
+	 * Set flags such as `.ok` based on `status`.
+	 *
+	 * For example a 2xx response will give you a `.ok` of __true__
+	 * whereas 5xx will be __false__ and `.error` will be __true__. The
+	 * `.clientError` and `.serverError` are also available to be more
+	 * specific, and `.statusType` is the class of error ranging from 1..5
+	 * sometimes useful for mapping respond colors etc.
+	 *
+	 * "sugar" properties are also defined for common cases. Currently providing:
+	 *
+	 *   - .noContent
+	 *   - .badRequest
+	 *   - .unauthorized
+	 *   - .notAcceptable
+	 *   - .notFound
+	 *
+	 * @param {Number} status
+	 * @api private
+	 */
+
+	ResponseBase.prototype._setStatusProperties = function(status){
+	    var type = status / 100 | 0;
+
+	    // status / class
+	    this.status = this.statusCode = status;
+	    this.statusType = type;
+
+	    // basics
+	    this.info = 1 == type;
+	    this.ok = 2 == type;
+	    this.redirect = 3 == type;
+	    this.clientError = 4 == type;
+	    this.serverError = 5 == type;
+	    this.error = (4 == type || 5 == type)
+	        ? this.toError()
+	        : false;
+
+	    // sugar
+	    this.accepted = 202 == status;
+	    this.noContent = 204 == status;
+	    this.badRequest = 400 == status;
+	    this.unauthorized = 401 == status;
+	    this.notAcceptable = 406 == status;
+	    this.forbidden = 403 == status;
+	    this.notFound = 404 == status;
+	};
+
+
+/***/ },
+/* 11 */
+/***/ function(module, exports) {
+
+	
+	/**
+	 * Return the mime type for the given `str`.
+	 *
+	 * @param {String} str
+	 * @return {String}
+	 * @api private
+	 */
+
+	exports.type = function(str){
+	  return str.split(/ *; */).shift();
+	};
+
+	/**
+	 * Return header field parameters.
+	 *
+	 * @param {String} str
+	 * @return {Object}
+	 * @api private
+	 */
+
+	exports.params = function(str){
+	  return str.split(/ *; */).reduce(function(obj, str){
+	    var parts = str.split(/ *= */);
+	    var key = parts.shift();
+	    var val = parts.shift();
+
+	    if (key && val) obj[key] = val;
+	    return obj;
+	  }, {});
+	};
+
+	/**
+	 * Parse Link header fields.
+	 *
+	 * @param {String} str
+	 * @return {Object}
+	 * @api private
+	 */
+
+	exports.parseLinks = function(str){
+	  return str.split(/ *, */).reduce(function(obj, str){
+	    var parts = str.split(/ *; */);
+	    var url = parts[0].slice(1, -1);
+	    var rel = parts[1].split(/ *= */)[1].slice(1, -1);
+	    obj[rel] = url;
+	    return obj;
+	  }, {});
+	};
+
+	/**
+	 * Strip content related fields from `header`.
+	 *
+	 * @param {Object} header
+	 * @return {Object} header
+	 * @api private
+	 */
+
+	exports.cleanHeader = function(header, shouldStripCookie){
+	  delete header['content-type'];
+	  delete header['content-length'];
+	  delete header['transfer-encoding'];
+	  delete header['host'];
+	  if (shouldStripCookie) {
+	    delete header['cookie'];
+	  }
+	  return header;
+	};
+
+
+/***/ },
+/* 12 */
 /***/ function(module, exports) {
 
 	module.exports = function(module) {
