@@ -40,8 +40,11 @@ export default class Proxy {
       const protocol = service.getType()
 
       if ((protocol === 'POST' || protocol === 'PUT') && isObject(options.data)) {
-        httpRequest.type('form')
         httpRequest.send(options.data)
+      }
+
+      if (options.form === true) {
+        httpRequest.type('form')
       }
 
       // 封裝 superagent 的訊息
