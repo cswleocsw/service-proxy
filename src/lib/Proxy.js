@@ -43,7 +43,8 @@ export default class Proxy {
         httpRequest.send(options.data)
       }
 
-      if (options.form === true) {
+      // form data
+      if (options.form === true && true) {
         httpRequest.type('form')
       }
 

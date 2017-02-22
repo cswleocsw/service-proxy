@@ -2,10 +2,8 @@
 
 > ServiceProxy provide a simple interface for API request。
 
-
 ## Use
 register -> request
-
 
 ```
 const service_proxy = new ServiceProxy()
@@ -16,15 +14,11 @@ service_proxy.regiser('query_product', {
     url: '/product'
 })
 
-
-
 service_proxy.regiser('create_product', {
     type: 'POST',
     url: '/product'
 })
-
 ...
-
 
 // request
 const promise = service_proxy.request('product'}
