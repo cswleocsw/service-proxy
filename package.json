@@ -1,8 +1,8 @@
 {
   "name": "service-proxy",
   "version": "0.2.0",
-  "description": "",
-  "main": "builds/service-proxy.js",
+  "description": "service-proxy provide a simple interface for API request",
+  "main": "build/service-proxy.js",
   "scripts": {
     "start": "webpack-dashboard -c cyan -- babel-node scripts/start.js",
     "build": "NODE_ENV=production webpack"
