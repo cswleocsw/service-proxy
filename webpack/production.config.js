@@ -9,14 +9,14 @@ export default new Config().extend('webpack/base.config.js').merge({
 
   plugins: [
     new webpack.optimize.OccurrenceOrderPlugin(true),
-    // new webpack.optimize.UglifyJsPlugin({
-    //     mangle: true,
-    //     output: {
-    //         comments: false
-    //     },
-    //     compress: {
-    //         warnings: false
-    //     }
-    // })
+    new webpack.optimize.UglifyJsPlugin({
+        mangle: true,
+        output: {
+            comments: false
+        },
+        compress: {
+            warnings: false
+        }
+    })
   ]
 })
