@@ -7,7 +7,7 @@ export default new Config().merge({
   context: path.resolve(__dirname, '..', 'src'),
 
   entry: {
-    app: ['babel-polyfill', './index.js']
+    app: ['./index.js']
   },
 
   output: {
