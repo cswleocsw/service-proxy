@@ -17348,8 +17348,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var protocol = service.getType();
 
 	      if ((protocol === 'POST' || protocol === 'PUT') && (0, _lodash.isObject)(options.data)) {
-	        httpRequest.type('form');
 	        httpRequest.send(options.data);
+	      }
+
+	      if (options.form === true) {
+	        httpRequest.type('form');
 	      }
 
 	      // 封裝 superagent 的訊息
