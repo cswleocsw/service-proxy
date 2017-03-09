@@ -20,6 +20,10 @@ export default class Service {
     return this.cache
   }
 
+  clearCache() {
+    this.cache.reset()
+  }
+
   getURL() {
     return this.url
   }
