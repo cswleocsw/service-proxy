@@ -1,6 +1,3 @@
-import ServiceProxy from './lib/ServiceProxy'
+import ServiceProvider from './lib/ServiceProvider'
 
-
-
-
-export default ServiceProxy
+export default ServiceProvider

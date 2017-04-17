@@ -3,66 +3,46 @@
 > ServiceProxy provide a simple interface for API request。
 
 ## Use
-register -> request
-
 ```
-const service_proxy = new ServiceProxy()
+// https://httpbin.org/
 
-// register
-service_proxy.regiser('query_product', {
-    type: 'GET',
-    url: '/product'
-})
+const config = {
+  test: {
+     getTest: {
+      type: 'GET',
+      url: 'https://httpbin.org/get'
+    },
+    postTest: {
+      type: 'POST',
+      url: 'https://httpbin.org/post'
+    },
+    putTest: {
+      type: 'PUT',
+      url: 'https://httpbin.org/put'
+    },
+    deleteTest: {
+      type: 'DELETE',
+      url: 'https://httpbin.org/delete'
+    },
+    patchTest: {
+      type: 'PATCH',
+      url: 'https://httpbin.org/patch'
+    }
+  }
+}
 
-service_proxy.regiser('create_product', {
-    type: 'POST',
-    url: '/product'
-})
-...
+const api = new ServiceProvider(config)
 
-// request
-const promise = service_proxy.request('product'}
-    
-promise.then((res) => {
-    console.log(res)
-})
+// example
+api.test.request('getTest', { query: { _: Date.now() } }).then(res => console.log(JSON.parse(res.text)))    // queryString
+api.test.request('postTest', { data: { now: Date.now() } }).then(res => console.log(JSON.parse(res.text)))  // form data
+api.test.request('putTest').then(res => console.log(JSON.parse(res.text)))
+api.test.request('deleteTest', { header: [ { key: 'Content-Type', value: 'application/json' } ]}).then(res => console.log(JSON.parse(res.text))) // with header
+api.test.request('patchTest').then(res => console.log(JSON.parse(res.text)))
 
-promise.catch((res) => {
-    console.log(res)
-})
-    
-```
 
-### Request method
-support GET、POST、PUT、DELETE
+// with vue
 
-### Query string
 
-```
-const promise = service_proxy.request('product', { query: { updateTS: Date.now() } }}
-```
 
-### Post form data
-```
-const promise = service_proxy.request('product', { data: { updateTS: Date.now() } }}
-```
-
-### Response
-```
-promise.then(res => console.log(res))
-```
-
-#### attribute
-* body
-* status
-* statusText
-* text
-* debug
-
-#### method
-* get
-
-```
-// if body => { "success": { products: [ { ... } ] } }
-cosnt products = res.get('success.products')
 ```

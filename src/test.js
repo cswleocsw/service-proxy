@@ -1,24 +1,38 @@
-import ServiceProxy from './lib/ServiceProxy'
+import ServiceProvider from './lib/ServiceProvider'
 
-const service_proxy = new ServiceProxy()
+// text example
+// https://httpbin.org/
 
-// GET
-service_proxy.register('get_product', {
-    type: 'GET',
-    url: '/product'
-})
+const config = {
+  test: {
+     getTest: {
+      type: 'GET',
+      url: 'https://httpbin.org/get'
+    },
+    postTest: {
+      type: 'POST',
+      url: 'https://httpbin.org/post'
+    },
+    putTest: {
+      type: 'PUT',
+      url: 'https://httpbin.org/put'
+    },
+    deleteTest: {
+      type: 'DELETE',
+      url: 'https://httpbin.org/delete'
+    },
+    patchTest: {
+      type: 'PATCH',
+      url: 'https://httpbin.org/patch'
+    }
+  }
+}
 
-// POST
-service_proxy.register('add_product', {
-    type: 'POST',
-    url: '/product'
-})
+const api = new ServiceProvider(config)
 
-service_proxy.request('get_product', { query: { t: Date.now() } })
-  .then(res => console.log(res))
-  .catch(res => console.log(res))
-
-
-service_proxy.request('add_product', { data: { 'product-id': '001' } })
-  .then(res => console.log(res))
-  .catch(res => console.log(res))
+// example
+api.test.request('getTest', { query: { _: Date.now() } }).then(res => console.log(JSON.parse(res.text)))
+api.test.request('postTest', { data: { now: Date.now() } }).then(res => console.log(JSON.parse(res.text)))
+api.test.request('putTest').then(res => console.log(JSON.parse(res.text)))
+api.test.request('deleteTest').then(res => console.log(JSON.parse(res.text)))
+api.test.request('patchTest').then(res => console.log(JSON.parse(res.text)))
