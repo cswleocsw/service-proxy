@@ -1,4 +1,4 @@
-import ServiceProvider from './lib/ServiceProvider'
+import ServiceProxy from './index'
 
 // text example
 // https://httpbin.org/
@@ -28,7 +28,7 @@ const config = {
   }
 }
 
-const api = new ServiceProvider(config)
+const api = new ServiceProxy(config)
 
 // example
 api.test.request('getTest', { query: { _: Date.now() } }).then(res => console.log(JSON.parse(res.text)))

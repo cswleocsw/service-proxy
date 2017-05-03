@@ -1,47 +1,48 @@
-import _ from 'lodash'
-import ServiceProxy from './ServiceProxy'
+import { isString } from 'lodash'
 
-const handler = {
-  get(target, property, receiver) {
-    if (target.map.has(property)) {
-      return target.map.get(property)
-    } else {
-      throw new ReferenceError(`Property ${property} does not exist.`)
-    }
-  },
-
-  set(target, key, value, receiver) {
-    throw new ReferenceError(`Property ${key} can not set.`)
-  }
-}
+import Proxy from './Proxy'
+import Service from './Service'
 
 export default class ServiceProvider {
-  constructor(data = {}) {
+  constructor(options = {}) {
+    this.name = options.name || ''
     this.map = new Map()
-    this.bind(data)
-    return new Proxy(this, handler)
   }
 
-  bind(data) {
-    _.each(data, (service, name) => {
-      let sp = new ServiceProxy({ name })
+  register(key, options = {}) {
+    if (!isString(key)) {
+      console.log('key type is should be string')
+      return
+    }
 
-      try {
-        _.each(service, (v, k) => {
-          sp.register(k, v)
-        })
-      } catch (e) {
-        console.error(e)
-        sp = null
-      }
+    if (this.map.has(key)) {
+      return
+    }
 
-      if (sp) {
-        this.map.set(name, sp)
-      }
-    })
+    this.map.set(key, new Service(options))
   }
 
-  make(type) {
-    return this.map.get(type)
+  request(key, options = {}) {
+    const service = this.map.get(key)
+
+    if (!service || !(service instanceof Service)) {
+      throw new Error(`request service ${key} is not define`)
+    }
+
+    return Proxy.request(service, options)
+  }
+
+  get(key) {
+    return this.map.get(key)
+  }
+
+  list() {
+    const arr = []
+    this.map.forEach((_, key) => arr.push(key))
+    return arr
+  }
+
+  getName() {
+    return this.name
   }
 }
