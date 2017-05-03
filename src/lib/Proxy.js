@@ -7,13 +7,12 @@ import each from 'lodash.foreach'
 import Response from './Response'
 
 export default class Proxy {
-  static request(service, options = {}) {
+  static request(service, options = {}, withCredentials = false) {
     return new Promise((resolve, reject) => {
       let url = service.getURL()
 
       if (url && options.route_params) {
         url = url.replace(/:([^/.?]+)/g, (match, token) => {
-          // TODO: fix regex
           if (get(options.route_params, token, '')) {
             return get(options.route_params, token, '')
           }
@@ -52,9 +51,12 @@ export default class Proxy {
         httpRequest.type('form')
       }
 
+      if (withCredentials) {
+        httpRequest.withCredentials()
+      }
+
       // 封裝 superagent 的訊息
       httpRequest
-        .withCredentials()
         .then((response) => {
           const res = new Response({
             status: response.status,
