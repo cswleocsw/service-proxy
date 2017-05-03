@@ -1,5 +1,9 @@
 import superagent from 'superagent'
-import { get, each, isArray, isObject } from 'lodash'
+import get from 'lodash.get'
+import isObject from 'lodash.isobject'
+import isArray from 'lodash.isarray'
+import each from 'lodash.foreach'
+
 import Response from './Response'
 
 export default class Proxy {

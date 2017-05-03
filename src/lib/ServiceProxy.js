@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import each from 'lodash.foreach'
 import ServiceProvider from './ServiceProvider'
 
 const handler = {
@@ -29,11 +29,11 @@ export default class ServiceProxy {
   }
 
   bind(data) {
-    _.each(data, (service, name) => {
+    each(data, (service, name) => {
       let sp = new ServiceProvider({ name })
 
       try {
-        _.each(service, (v, k) => {
+        each(service, (v, k) => {
           sp.register(k, v)
         })
       } catch (e) {

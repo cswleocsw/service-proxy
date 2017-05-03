@@ -1,4 +1,4 @@
-import { isString } from 'lodash'
+import isString from 'lodash.isstring'
 
 import Proxy from './Proxy'
 import Service from './Service'

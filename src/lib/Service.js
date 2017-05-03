@@ -1,4 +1,4 @@
-import { isArray } from 'lodash'
+import isArray from 'lodash.isarray'
 import Response from './Response'
 
 export default class Service {
