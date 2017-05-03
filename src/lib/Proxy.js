@@ -54,6 +54,7 @@ export default class Proxy {
 
       // 封裝 superagent 的訊息
       httpRequest
+        .withCredentials()
         .then((response) => {
           const res = new Response({
             status: response.status,
