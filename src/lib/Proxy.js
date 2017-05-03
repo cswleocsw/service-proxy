@@ -3,7 +3,7 @@ import { get, each, isArray, isObject } from 'lodash'
 import Response from './Response'
 
 export default class Proxy {
-  static request(service, options = {}) {
+  static request(service, options = {}, withCredentials = false) {
     return new Promise((resolve, reject) => {
       let url = service.getURL()
 
@@ -46,6 +46,10 @@ export default class Proxy {
       // form data
       if (options.form === true && true) {
         httpRequest.type('form')
+      }
+
+      if (withCredentials) {
+        httpRequest.withCredentials()
       }
 
       // 封裝 superagent 的訊息
