@@ -6,6 +6,7 @@ import Service from './Service'
 export default class ServiceProxy {
   constructor(options = {}) {
     this.name = options.name || ''
+    this.cookie = options.cookie || false
     this.map = new Map()
   }
 
@@ -22,14 +23,14 @@ export default class ServiceProxy {
     this.map.set(key, new Service(options))
   }
 
-  request(key, options = {}) {
+  request(key, payload = {}) {
     const service = this.map.get(key)
 
     if (!service || !(service instanceof Service)) {
       throw new Error(`request service ${key} is not define`)
     }
 
-    return Proxy.request(service, options)
+    return Proxy.request(service, payload, this.cookie)
   }
 
   get(key) {
