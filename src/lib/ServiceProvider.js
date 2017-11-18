@@ -4,7 +4,10 @@ import Service from './Service'
 export default class ServiceProvider {
   constructor(options = {}) {
     this.name = options.name || ''
-    this.cookie = options.cookie || false
+
+    // superagent withCredentials
+    this.cors = options.cors || false
+
     this.map = new Map()
   }
 
@@ -28,7 +31,7 @@ export default class ServiceProvider {
       throw new Error(`request service ${key} is not define`)
     }
 
-    return Proxy.request(service, payload, this.cookie)
+    return Proxy.request(service, payload, this.cors)
   }
 
   get(key) {

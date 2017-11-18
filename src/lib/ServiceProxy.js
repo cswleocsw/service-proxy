@@ -2,14 +2,18 @@ import each from 'lodash.foreach'
 import ServiceProvider from './ServiceProvider'
 
 export default class ServiceProxy {
-  constructor(data = {}) {
+  constructor(data = {}, options = {}) {
+    // superagent withCredentials
+    this.cors = options.cors || false
+
     this.map = new Map()
+
     this.bind(data)
   }
 
   bind(data) {
     each(data, (service, name) => {
-      let sp = new ServiceProvider({ name })
+      let sp = new ServiceProvider({ name, cors: this.cors })
 
       try {
         each(service, (v, k) => {

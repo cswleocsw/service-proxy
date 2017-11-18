@@ -1,3 +1,10 @@
+
+# service-proxy
+> superagent request proxy.
+
+
+## use
+```
 import ServiceProxy from 'service-proxy'
 
 // text example
@@ -60,3 +67,12 @@ testAPI.request('deleteTest')
 testAPI.request('patchTest')
   .then(res => console.log(JSON.parse(res.text)))
   .catch(error => console.error('patch.catch.error', error))
+```
+
+## Cross-Origin Resource Sharing(CORS)
+
+superagent withCredentials()
+
+```
+new ServiceProxy(config, { cors: true })
+```
