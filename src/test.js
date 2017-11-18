@@ -1,7 +1,4 @@
-import {
-  ServiceProxy,
-  ServiceProvider
-} from './index'
+import ServiceProxy from './index'
 
 // text example
 // https://httpbin.org/

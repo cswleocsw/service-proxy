@@ -1,14 +1,11 @@
-# ServiceProxy [![Build Status](https://travis-ci.org/cswleocsw/service-proxy.svg?branch=master)](https://travis-ci.org/cswleocsw/service-proxy)
+import ServiceProxy from 'service-proxy'
 
-> ServiceProxy provide a simple interface for API request。
-
-## Use ServiceProvider
-```
+// text example
 // https://httpbin.org/
 
 const config = {
   test: {
-     getTest: {
+    getTest: {
       type: 'GET',
       url: 'https://httpbin.org/get'
     },
@@ -31,7 +28,9 @@ const config = {
   }
 }
 
-const apiTest = new ServiceProvider(config)
+const sp = new ServiceProxy(config)
+
+const testAPI = sp.make('test')
 
 // example
 testAPI.request('getTest', {
