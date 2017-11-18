@@ -1,5 +1,3 @@
-import isString from 'lodash.isstring'
-
 import Proxy from './Proxy'
 import Service from './Service'
 
@@ -11,7 +9,7 @@ export default class ServiceProvider {
   }
 
   register(key, options = {}) {
-    if (!isString(key)) {
+    if (typeof key !== 'string') {
       console.log('key type is should be string')
       return
     }

@@ -59,10 +59,10 @@ export default class Proxy {
       httpRequest
         .then((response) => {
           const res = new Response({
-            status: response.status,
-            text: response.text,
-            body: response.body,
-            statusText: response.statusText,
+            status: get(response, 'status'),
+            text: get(response, 'text', ''),
+            body: get(response, 'body', {}),
+            statusText: get(response, 'statusText'),
             debug: response
           })
           service.setCache(res)
@@ -70,10 +70,10 @@ export default class Proxy {
         })
         .catch((error) => {
           const res = new Response({
-            status: error.status,
-            text: error.response.text,
-            body: error.response.body,
-            statusText: error.response.statusText,
+            status: get(error, 'status'),
+            text: get(error, 'response.text', ''),
+            body: get(error, 'response.body', {}),
+            statusText: get(error, 'response.statusText'),
             debug: error
           })
           service.setCache(res)

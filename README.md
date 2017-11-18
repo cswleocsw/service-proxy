@@ -2,7 +2,7 @@
 
 > ServiceProxy provide a simple interface for API request。
 
-## Use
+## Use ServiceProvider
 ```
 // https://httpbin.org/
 
@@ -31,18 +31,33 @@ const config = {
   }
 }
 
-const api = new ServiceProvider(config)
+const apiTest = new ServiceProvider(config)
 
 // example
-api.test.request('getTest', { query: { _: Date.now() } }).then(res => console.log(JSON.parse(res.text)))    // queryString
-api.test.request('postTest', { data: { now: Date.now() } }).then(res => console.log(JSON.parse(res.text)))  // form data
-api.test.request('putTest').then(res => console.log(JSON.parse(res.text)))
-api.test.request('deleteTest', { header: [ { key: 'Content-Type', value: 'application/json' } ]}).then(res => console.log(JSON.parse(res.text))) // with header
-api.test.request('patchTest').then(res => console.log(JSON.parse(res.text)))
+testAPI.request('getTest', {
+    query: {
+      _: Date.now()
+    }
+  })
+  .then(res => console.log(JSON.parse(res.text)))
+  .catch(error => console.error('get.catch.error', error))
 
+testAPI.request('postTest', {
+    data: {
+      now: Date.now()
+    }
+  })
+  .then(res => console.log(JSON.parse(res.text)))
+  .catch(error => console.error('post.catch.error', error))
 
-// with vue
+testAPI.request('putTest')
+  .then(res => console.log(JSON.parse(res.text)))
+  .catch(error => console.error('put.catch.error', error))
 
+testAPI.request('deleteTest')
+  .then(res => console.log(JSON.parse(res.text)))
+  .catch(error => console.error('delete.catch.error', error))
 
-
-```
+testAPI.request('patchTest')
+  .then(res => console.log(JSON.parse(res.text)))
+  .catch(error => console.error('patch.catch.error', error))

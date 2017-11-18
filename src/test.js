@@ -1,11 +1,14 @@
-import ServiceProxy from './index'
+import {
+  ServiceProxy,
+  ServiceProvider
+} from './index'
 
 // text example
 // https://httpbin.org/
 
 const config = {
   test: {
-     getTest: {
+    getTest: {
       type: 'GET',
       url: 'https://httpbin.org/get'
     },
@@ -28,11 +31,35 @@ const config = {
   }
 }
 
-const api = new ServiceProxy(config)
+const sp = new ServiceProxy(config)
+
+const testAPI = sp.make('test')
 
 // example
-api.test.request('getTest', { query: { _: Date.now() } }).then(res => console.log(JSON.parse(res.text)))
-api.test.request('postTest', { data: { now: Date.now() } }).then(res => console.log(JSON.parse(res.text)))
-api.test.request('putTest').then(res => console.log(JSON.parse(res.text)))
-api.test.request('deleteTest').then(res => console.log(JSON.parse(res.text)))
-api.test.request('patchTest').then(res => console.log(JSON.parse(res.text)))
+testAPI.request('getTest', {
+    query: {
+      _: Date.now()
+    }
+  })
+  .then(res => console.log(JSON.parse(res.text)))
+  .catch(error => console.error('get.catch.error', error))
+
+testAPI.request('postTest', {
+    data: {
+      now: Date.now()
+    }
+  })
+  .then(res => console.log(JSON.parse(res.text)))
+  .catch(error => console.error('post.catch.error', error))
+
+testAPI.request('putTest')
+  .then(res => console.log(JSON.parse(res.text)))
+  .catch(error => console.error('put.catch.error', error))
+
+testAPI.request('deleteTest')
+  .then(res => console.log(JSON.parse(res.text)))
+  .catch(error => console.error('delete.catch.error', error))
+
+testAPI.request('patchTest')
+  .then(res => console.log(JSON.parse(res.text)))
+  .catch(error => console.error('patch.catch.error', error))

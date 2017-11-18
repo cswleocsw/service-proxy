@@ -1,3 +1,7 @@
-import ServiceProxy from './lib/ServiceProxy'
+const ServiceProvider = require('./lib/ServiceProvider')
+const ServiceProxy = require('./lib/ServiceProxy')
 
-export default ServiceProxy
+module.exports = {
+  ServiceProvider,
+  ServiceProxy
+}
