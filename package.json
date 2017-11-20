@@ -1,6 +1,6 @@
 {
   "name": "service-proxy",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "service-proxy provide a simple interface for API request",
   "main": "dist/service-proxy.js",
   "scripts": {
