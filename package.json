@@ -2,7 +2,7 @@
   "name": "service-proxy",
   "version": "0.4.1",
   "description": "service-proxy provide a simple interface for API request",
-  "main": "build/service-proxy.js",
+  "main": "dist/service-proxy.js",
   "scripts": {
     "start": "cross-env NODE_ENV=development babel-node scripts/start.js",
     "build": "cross-env NODE_ENV=production babel-node scripts/build.js"
